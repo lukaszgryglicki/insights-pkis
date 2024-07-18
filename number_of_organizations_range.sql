@@ -1,6 +1,6 @@
 select
   r.{{range}}::date as {{range}},
-  count(distinct c.organization_id) as contributors
+  count(distinct c.organization_id) as organizations
 from
   {{schema}}silver_fact.code_contributions c
 inner join

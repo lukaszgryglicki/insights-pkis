@@ -4,7 +4,7 @@ Insights PKIs
 
 # Usage
 
-Just run `` [VERBOSE=1] ./gen_all.sh ``
+Just run `` [SCHEMA='analytics_dev.dev_yourname_'] [VERBOSE=1] ./gen_all.sh ``
 
 See `*.sh` files and comments on top for more specialized usage.
 
