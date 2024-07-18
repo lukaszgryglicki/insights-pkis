@@ -6,6 +6,7 @@
 # SKIP_PROJECTS=1
 # SKIP_REPOSITORIES=1
 # SKIP_PLATFORMS=1
+# SKIP_UNAFFILIATED=1
 
 # Contributors now, last 12 months, last 10 years
 if [ -z "${SKIP_CONTRIBUTORS}" ]
@@ -45,4 +46,12 @@ then
   ./pki_report.sh number_of_platforms_now
   ./pki_report_range.sh number_of_platforms_range year
   ./pki_report_range.sh number_of_platforms_range month
+fi
+
+# Unaffiliated now, last 12 months, last 10 years
+if [ -z "${SKIP_UNAFFILIATED}" ]
+then
+  ./pki_report.sh number_of_unaffiliated_now
+  ./pki_report_range.sh number_of_unaffiliated_range year
+  ./pki_report_range.sh number_of_unaffiliated_range month
 fi
