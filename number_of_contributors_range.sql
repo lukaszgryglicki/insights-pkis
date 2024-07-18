@@ -1,13 +1,16 @@
 select
-  -- extract({{range}} from r.{{range}}) as {{range}},
   r.{{range}}::date as {{range}},
   count(distinct c.member_id) as contributors
 from
-  analytics.silver_fact.code_contributions c
+  {{schema}}silver_fact.code_contributions c
+inner join
+  {{schema}}bronze_fivetran_crowd_dev.members m
+on
+  c.member_id = m.member_id
 inner join
   {{range}}s r
 on
-  c.activity_ts <= r.{{range}}
+  m.created_at <= r.{{range}}
 where
   not c.member_is_bot
 group by
