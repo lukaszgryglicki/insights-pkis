@@ -1,5 +1,6 @@
 select
   r.{{range}}::date as {{range}},
+  count(distinct c.member_id || c.platform || c.github_or_member_username) as identities,
   count(distinct c.member_id) as contributors
 from
   {{schema}}silver_fact.code_contributions c
