@@ -7,6 +7,9 @@
 # SKIP_REPOSITORIES=1
 # SKIP_PLATFORMS=1
 # SKIP_UNAFFILIATED=1
+# SKIP_ISSUES=1
+# SKIP_PULLREQUESTS=1
+# SKIP_COMMITS=1
 
 # Contributors now, last 12 months, last 10 years
 if [ -z "${SKIP_CONTRIBUTORS}" ]
@@ -54,4 +57,28 @@ then
   ./pki_report.sh number_of_unaffiliated_now
   ./pki_report_range.sh number_of_unaffiliated_range year
   ./pki_report_range.sh number_of_unaffiliated_range month
+fi
+
+# Issues now, last 12 months, last 10 years
+if [ -z "${SKIP_ISSUES}" ]
+then
+  ./pki_report.sh number_of_issues_now
+  ./pki_report_range.sh number_of_issues_range year
+  ./pki_report_range.sh number_of_issues_range month
+fi
+
+# PRs now, last 12 months, last 10 years
+if [ -z "${SKIP_PULLREQUESTS}" ]
+then
+  ./pki_report.sh number_of_pullrequests_now
+  ./pki_report_range.sh number_of_pullrequests_range year
+  ./pki_report_range.sh number_of_pullrequests_range month
+fi
+
+# Commits now, last 12 months, last 10 years
+if [ -z "${SKIP_COMMITS}" ]
+then
+  ./pki_report.sh number_of_commits_now
+  ./pki_report_range.sh number_of_commits_range year
+  ./pki_report_range.sh number_of_commits_range month
 fi

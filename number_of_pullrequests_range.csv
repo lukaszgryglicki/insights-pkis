@@ -1,0 +1,5 @@
+001003 (42000): SQL compilation error:
+syntax error line 2 at position 4 unexpected '{'.
+syntax error line 7 at position 2 unexpected '{'.
+syntax error line 13 at position 3 unexpected '{'.
+syntax error line 15 at position 3 unexpected '{'.
