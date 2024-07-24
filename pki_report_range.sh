@@ -22,6 +22,7 @@ sed -i "s/{{range}}/${2}/g" /tmp/rep.sql || exit 5
 sed -i "s/{{schema}}/${SCHEMA}/g" /tmp/rep.sql || exit 6
 if [ ! -z "${VERBOSE}" ]
 then
+  cat /tmp/rep.sql
   echo "snowsql_v3_key.sh -o output_file=\"${1}_${2}.csv\" -o quiet=true -o friendly=false -o header=true -o output_format=csv < \"/tmp/rep.sql\""
 fi
 rm -rf "${1}_${2}.csv" 1>/dev/null 2>/dev/null
