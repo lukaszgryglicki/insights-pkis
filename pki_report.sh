@@ -1,6 +1,7 @@
 #!/bin/bash
 # VERBOSE=1
 # SCHEMA='analytics_dev.dev_lgryglicki_'
+# FLY=1 - use "on the fly version"
 # ./pki_report.sh number_of_contributors_now
 if [ -z "${1}" ]
 then
@@ -11,7 +12,12 @@ if [ -z "${SCHEMA}" ]
 then
   SCHEMA="analytics."
 fi
-cp "${1}.sql" /tmp/rep.sql || exit 2
+if [ -z "${FLY}" ]
+then
+  cp "${1}.sql" /tmp/rep.sql || exit 2
+else
+  cp "on-the-fly/${1}.sql" /tmp/rep.sql || exit 2
+fi
 sed -i "s/{{schema}}/${SCHEMA}/g" /tmp/rep.sql || exit 3
 if [ ! -z "${VERBOSE}" ]
 then

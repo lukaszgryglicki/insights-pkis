@@ -1,5 +1,6 @@
 #!/bin/bash
 # VERBOSE=1
+# FLY=1 - use "on the fly version"
 # SCHEMA='analytics_dev.dev_lgryglicki_'
 # ./pki_report_range.sh number_of_contributors_range year|month
 if [ -z "${1}" ]
@@ -17,7 +18,12 @@ then
   SCHEMA="analytics."
 fi
 cp "${2}s.sql" /tmp/rep.sql || exit 3
-cat "${1}.sql" >> /tmp/rep.sql || exit 4
+if [ -z "${FLY}" ]
+then
+  cat "${1}.sql" >> /tmp/rep.sql || exit 4
+else
+  cat "on-the-fly/${1}.sql" >> /tmp/rep.sql || exit 4
+fi
 sed -i "s/{{range}}/${2}/g" /tmp/rep.sql || exit 5
 sed -i "s/{{schema}}/${SCHEMA}/g" /tmp/rep.sql || exit 6
 if [ ! -z "${VERBOSE}" ]
