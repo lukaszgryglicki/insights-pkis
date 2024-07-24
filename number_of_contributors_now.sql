@@ -3,9 +3,9 @@ select
   i.value as identities,
   c.value as contributors
 from
-  analytics_dev.dev_lgryglicki_gold_insights.pkis i
+  {{schema}}gold_insights.pkis i
 inner join
-  analytics_dev.dev_lgryglicki_gold_insights.pkis c
+  {{schema}}gold_insights.pkis c
 on
   i.type = c.type
   and i.timestamp = c.timestamp

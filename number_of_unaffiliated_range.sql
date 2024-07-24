@@ -6,10 +6,10 @@ with data as (
     uc.value as unaffiliated_contributions,
     um.value as unaffiliated_contributors,
   from
-    analytics_dev.dev_lgryglicki_gold_insights.pkis c,
-    analytics_dev.dev_lgryglicki_gold_insights.pkis m,
-    analytics_dev.dev_lgryglicki_gold_insights.pkis uc,
-    analytics_dev.dev_lgryglicki_gold_insights.pkis um
+    {{schema}}gold_insights.pkis c,
+    {{schema}}gold_insights.pkis m,
+    {{schema}}gold_insights.pkis uc,
+    {{schema}}gold_insights.pkis um
   where
     c.metric = 'contributions'
     and m.metric = 'contributors'
