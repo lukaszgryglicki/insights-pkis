@@ -1,0 +1,1088 @@
+select
+  current_timestamp()::date as now,
+  count(distinct member_id || platform || github_or_member_username) as identities,
+  count(distinct member_id) as contributors
+from
+  analytics.silver_fact.code_contributions
+where
+  not member_is_bot
+snowsql_v3_key.sh -o output_file="number_of_contributors_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_contributors_now.csv generated:                                       
+"NOW","IDENTITIES","CONTRIBUTORS"
+"2024-07-23","576233","496863"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct c.member_id || c.platform || c.github_or_member_username) as identities,
+  count(distinct c.member_id) as contributors
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  analytics.bronze_fivetran_crowd_dev.members m
+on
+  c.member_id = m.member_id
+inner join
+  years r
+on
+  m.created_at <= r.year
+where
+  not c.member_is_bot
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_contributors_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_contributors_range_year.csv generated:                                
+"YEAR","IDENTITIES","CONTRIBUTORS"
+"2024-01-01","164350","134029"
+"2024-07-23","576176","496809"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct c.member_id || c.platform || c.github_or_member_username) as identities,
+  count(distinct c.member_id) as contributors
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  analytics.bronze_fivetran_crowd_dev.members m
+on
+  c.member_id = m.member_id
+inner join
+  months r
+on
+  m.created_at <= r.month
+where
+  not c.member_is_bot
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_contributors_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_contributors_range_month.csv generated:                               
+"MONTH","IDENTITIES","CONTRIBUTORS"
+"2023-08-01","22653","16563"
+"2023-09-01","58594","45509"
+"2023-10-01","117261","91615"
+"2023-11-01","155807","126970"
+"2023-12-01","160417","130744"
+"2024-01-01","164350","134029"
+"2024-02-01","253114","209941"
+"2024-03-01","296798","250988"
+"2024-04-01","323187","275441"
+"2024-05-01","428067","351270"
+"2024-06-01","476858","397691"
+"2024-07-01","531562","452219"
+"2024-07-23","576176","496809"
+select
+  current_timestamp()::date as now,
+  count(distinct organization_id) as organizations
+from
+  analytics.silver_fact.code_contributions
+where
+  not member_is_bot
+snowsql_v3_key.sh -o output_file="number_of_organizations_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_organizations_now.csv generated:                                      
+"NOW","ORGANIZATIONS"
+"2024-07-23","58633"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct c.organization_id) as organizations
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  analytics.bronze_fivetran_crowd_dev.organizations o
+on
+  c.organization_id = o.organization_id
+inner join
+  years r
+on
+  o.created_at <= r.year
+where
+  not c.member_is_bot
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_organizations_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_organizations_range_year.csv generated:                               
+"YEAR","ORGANIZATIONS"
+"2024-01-01","29610"
+"2024-07-23","58633"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct c.organization_id) as organizations
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  analytics.bronze_fivetran_crowd_dev.organizations o
+on
+  c.organization_id = o.organization_id
+inner join
+  months r
+on
+  o.created_at <= r.month
+where
+  not c.member_is_bot
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_organizations_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_organizations_range_month.csv generated:                              
+"MONTH","ORGANIZATIONS"
+"2023-08-01","3858"
+"2023-09-01","9835"
+"2023-10-01","19313"
+"2023-11-01","25984"
+"2023-12-01","27443"
+"2024-01-01","29610"
+"2024-02-01","48468"
+"2024-03-01","51222"
+"2024-04-01","52984"
+"2024-05-01","53708"
+"2024-06-01","54361"
+"2024-07-01","57139"
+"2024-07-23","58633"
+select
+  current_timestamp()::date as now,
+  count(distinct project_id) as projects
+from
+  analytics.silver_dim.project_segments
+where
+  project_status = 'Active'
+snowsql_v3_key.sh -o output_file="number_of_projects_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_projects_now.csv generated:                                           
+"NOW","PROJECTS"
+"2024-07-23","1058"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct ps.project_id) as projects
+from
+  analytics.silver_dim.project_segments ps
+inner join
+  analytics.bronze_fivetran_salesforce.projects p
+on
+  ps.project_id = p.project_id
+inner join
+  years r
+on
+  p.created_date <= r.year
+where
+  ps.project_status = 'Active'
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_projects_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_projects_range_year.csv generated:                                    
+"YEAR","PROJECTS"
+"2018-01-01","37"
+"2019-01-01","46"
+"2020-01-01","193"
+"2021-01-01","468"
+"2022-01-01","766"
+"2023-01-01","889"
+"2024-01-01","1006"
+"2024-07-23","1058"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct ps.project_id) as projects
+from
+  analytics.silver_dim.project_segments ps
+inner join
+  analytics.bronze_fivetran_salesforce.projects p
+on
+  ps.project_id = p.project_id
+inner join
+  months r
+on
+  p.created_date <= r.month
+where
+  ps.project_status = 'Active'
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_projects_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_projects_range_month.csv generated:                                   
+"MONTH","PROJECTS"
+"2023-07-01","924"
+"2023-08-01","928"
+"2023-09-01","938"
+"2023-10-01","972"
+"2023-11-01","989"
+"2023-12-01","1002"
+"2024-01-01","1006"
+"2024-02-01","1007"
+"2024-03-01","1021"
+"2024-04-01","1036"
+"2024-05-01","1044"
+"2024-06-01","1046"
+"2024-07-01","1048"
+"2024-07-23","1058"
+select
+  current_timestamp()::date as now,
+  count(distinct repository_url) as repositories
+from
+  analytics.silver_insights.segment_repos
+snowsql_v3_key.sh -o output_file="number_of_repositories_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_repositories_now.csv generated:                                       
+"NOW","REPOSITORIES"
+"2024-07-23","9273"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+,lfx_integrations as (
+  select
+    settings,
+    platform,
+    created_ts
+  from
+    analytics.bronze_fivetran_crowd_dev.integrations
+  where
+    is_lfx_tenant
+    and platform in ('github', 'git', 'gerrit')
+),
+
+github_repositories_from_integrations as (
+  select
+    regexp_replace(r.value:"url", '\.git$', '') as repository_url,
+    created_ts
+  from
+    lfx_integrations,
+    table(flatten(settings:"repos")) r
+  where
+    platform = 'github'
+),
+
+github_repos as (
+  select
+    url as repository_url,
+    created_at,
+  from
+    analytics.bronze_fivetran_crowd_dev.github_repos
+  where
+    is_lfx_tenant
+),
+
+git_repositories as (
+  select
+    regexp_replace(r.value, '"', '') as repository_url,
+    created_ts
+  from
+    lfx_integrations,
+    table(flatten(settings:"remotes")) r
+  where
+    platform = 'git'
+),
+
+gerrit_repositories as (
+  select
+    settings:"remote":"orgurl" || coalesce('/' || settings:"remote":"space", '') || '/' || r.value as repository_url,
+    created_ts
+  from
+    lfx_integrations,
+    table(flatten(settings:"remote":"reponames")) r
+  where
+    platform = 'gerrit'
+),
+
+repositories as (
+  select repository_url, created_ts from github_repositories_from_integrations
+  union select repository_url, created_at from github_repos
+  union select repository_url, created_ts from git_repositories
+  union select repository_url, created_ts from gerrit_repositories
+)
+
+select
+  r.year::date as year,
+  count(distinct rp.repository_url) as repositories
+from
+  repositories rp
+inner join
+  years r
+on
+  rp.created_ts <= r.year
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_repositories_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_repositories_range_year.csv generated:                                
+"YEAR","REPOSITORIES"
+"2024-01-01","2557"
+"2024-07-23","9672"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+,lfx_integrations as (
+  select
+    settings,
+    platform,
+    created_ts
+  from
+    analytics.bronze_fivetran_crowd_dev.integrations
+  where
+    is_lfx_tenant
+    and platform in ('github', 'git', 'gerrit')
+),
+
+github_repositories_from_integrations as (
+  select
+    regexp_replace(r.value:"url", '\.git$', '') as repository_url,
+    created_ts
+  from
+    lfx_integrations,
+    table(flatten(settings:"repos")) r
+  where
+    platform = 'github'
+),
+
+github_repos as (
+  select
+    url as repository_url,
+    created_at,
+  from
+    analytics.bronze_fivetran_crowd_dev.github_repos
+  where
+    is_lfx_tenant
+),
+
+git_repositories as (
+  select
+    regexp_replace(r.value, '"', '') as repository_url,
+    created_ts
+  from
+    lfx_integrations,
+    table(flatten(settings:"remotes")) r
+  where
+    platform = 'git'
+),
+
+gerrit_repositories as (
+  select
+    settings:"remote":"orgurl" || coalesce('/' || settings:"remote":"space", '') || '/' || r.value as repository_url,
+    created_ts
+  from
+    lfx_integrations,
+    table(flatten(settings:"remote":"reponames")) r
+  where
+    platform = 'gerrit'
+),
+
+repositories as (
+  select repository_url, created_ts from github_repositories_from_integrations
+  union select repository_url, created_at from github_repos
+  union select repository_url, created_ts from git_repositories
+  union select repository_url, created_ts from gerrit_repositories
+)
+
+select
+  r.month::date as month,
+  count(distinct rp.repository_url) as repositories
+from
+  repositories rp
+inner join
+  months r
+on
+  rp.created_ts <= r.month
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_repositories_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_repositories_range_month.csv generated:                               
+"MONTH","REPOSITORIES"
+"2023-08-01","604"
+"2023-09-01","864"
+"2023-10-01","1682"
+"2023-11-01","2110"
+"2023-12-01","2333"
+"2024-01-01","2557"
+"2024-02-01","4365"
+"2024-03-01","6282"
+"2024-04-01","6794"
+"2024-05-01","7322"
+"2024-06-01","8641"
+"2024-07-01","9274"
+"2024-07-23","9672"
+select
+  current_timestamp()::date as now,
+  count(distinct platform) as platforms
+from
+  analytics.bronze_fivetran_crowd_dev.activities
+where
+  platform != 'other'
+snowsql_v3_key.sh -o output_file="number_of_platforms_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_platforms_now.csv generated:                                          
+"NOW","PLATFORMS"
+"2024-07-23","17"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct a.platform) as platforms
+from
+  analytics.bronze_fivetran_crowd_dev.activities a
+inner join
+  years r
+on
+  a.created_at <= r.year
+where
+  a.platform != 'other'
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_platforms_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_platforms_range_year.csv generated:                                   
+"YEAR","PLATFORMS"
+"2024-01-01","12"
+"2024-07-23","17"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct a.platform) as platforms
+from
+  analytics.bronze_fivetran_crowd_dev.activities a
+inner join
+  months r
+on
+  a.created_at <= r.month
+where
+  a.platform != 'other'
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_platforms_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_platforms_range_month.csv generated:                                  
+"MONTH","PLATFORMS"
+"2023-08-01","6"
+"2023-09-01","7"
+"2023-10-01","9"
+"2023-11-01","12"
+"2023-12-01","12"
+"2024-01-01","12"
+"2024-02-01","13"
+"2024-03-01","14"
+"2024-04-01","15"
+"2024-05-01","15"
+"2024-06-01","16"
+"2024-07-01","17"
+"2024-07-23","17"
+with data as (
+  select
+    current_timestamp()::date as now,
+    count(distinct member_id) as all_contributors,
+    count(distinct contribution_id) as all_contributions,
+    count(distinct case when organization_id is null then member_id end) as unaffiliated_contributors,
+    count(distinct case when organization_id is null then contribution_id end) as unaffiliated_contributions
+  from
+    analytics.silver_fact.code_contributions
+  where
+    not member_is_bot
+)
+select
+  *,
+  100.0* (unaffiliated_contributors / all_contributors) as percent_unaffiliated_contributors,
+  100.0* (unaffiliated_contributions / all_contributions) as percent_unaffiliated_contributions
+from
+  data
+snowsql_v3_key.sh -o output_file="number_of_unaffiliated_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_unaffiliated_now.csv generated:                                       
+"NOW","ALL_CONTRIBUTORS","ALL_CONTRIBUTIONS","UNAFFILIATED_CONTRIBUTORS","UNAFFILIATED_CONTRIBUTIONS","PERCENT_UNAFFILIATED_CONTRIBUTORS","PERCENT_UNAFFILIATED_CONTRIBUTIONS"
+"2024-07-23","496863","35220617","370569","7961833","74.581700","22.605600"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+,data as (
+  select
+    r.year::date as year,
+    count(distinct c.member_id) as all_contributors,
+    count(distinct c.contribution_id) as all_contributions,
+    count(distinct case when c.organization_id is null then c.member_id end) as unaffiliated_contributors,
+    count(distinct case when c.organization_id is null then c.contribution_id end) as unaffiliated_contributions
+  from
+    analytics.silver_fact.code_contributions c
+  inner join
+    years r
+  on
+    c.created_at <= r.year
+  where
+    not c.member_is_bot
+  group by
+    year
+  order by
+    year asc
+)
+
+select
+  *,
+  100.0* (unaffiliated_contributors / all_contributors) as percent_unaffiliated_contributors,
+  100.0* (unaffiliated_contributions / all_contributions) as percent_unaffiliated_contributions
+from
+  data
+snowsql_v3_key.sh -o output_file="number_of_unaffiliated_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_unaffiliated_range_year.csv generated:                                
+"YEAR","ALL_CONTRIBUTORS","ALL_CONTRIBUTIONS","UNAFFILIATED_CONTRIBUTORS","UNAFFILIATED_CONTRIBUTIONS","PERCENT_UNAFFILIATED_CONTRIBUTORS","PERCENT_UNAFFILIATED_CONTRIBUTIONS"
+"2024-01-01","94732","6078291","52121","449622","55.019400","7.397200"
+"2024-07-23","496863","35220617","370569","7961833","74.581700","22.605600"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+,data as (
+  select
+    r.month::date as month,
+    count(distinct c.member_id) as all_contributors,
+    count(distinct c.contribution_id) as all_contributions,
+    count(distinct case when c.organization_id is null then c.member_id end) as unaffiliated_contributors,
+    count(distinct case when c.organization_id is null then c.contribution_id end) as unaffiliated_contributions
+  from
+    analytics.silver_fact.code_contributions c
+  inner join
+    months r
+  on
+    c.created_at <= r.month
+  where
+    not c.member_is_bot
+  group by
+    month
+  order by
+    month asc
+)
+
+select
+  *,
+  100.0* (unaffiliated_contributors / all_contributors) as percent_unaffiliated_contributors,
+  100.0* (unaffiliated_contributions / all_contributions) as percent_unaffiliated_contributions
+from
+  data
+snowsql_v3_key.sh -o output_file="number_of_unaffiliated_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_unaffiliated_range_month.csv generated:                               
+"MONTH","ALL_CONTRIBUTORS","ALL_CONTRIBUTIONS","UNAFFILIATED_CONTRIBUTORS","UNAFFILIATED_CONTRIBUTIONS","PERCENT_UNAFFILIATED_CONTRIBUTORS","PERCENT_UNAFFILIATED_CONTRIBUTIONS"
+"2023-08-01","10956","820689","4457","44763","40.680900","5.454300"
+"2023-09-01","22050","1206779","10529","90483","47.750600","7.497900"
+"2023-10-01","51135","2997734","25090","209965","49.066200","7.004100"
+"2023-11-01","88727","5547938","48505","404545","54.667700","7.291800"
+"2023-12-01","91730","5862808","50123","429132","54.641900","7.319600"
+"2024-01-01","94732","6078291","52121","449622","55.019400","7.397200"
+"2024-02-01","161442","10802915","94712","1244622","58.666300","11.521200"
+"2024-03-01","209243","14808070","128345","2164322","61.337800","14.615800"
+"2024-04-01","234919","16530377","147177","2480060","62.650100","15.003000"
+"2024-05-01","319285","21209843","218549","3798638","68.449500","17.909800"
+"2024-06-01","371093","27113201","263711","5349477","71.063300","19.730200"
+"2024-07-01","437445","31010005","320266","6798513","73.212900","21.923600"
+"2024-07-23","496863","35220617","370569","7961833","74.581700","22.605600"
+select
+  current_timestamp()::date as now,
+  count(distinct issue_id) as issues
+from
+  analytics.silver_fact.code_contributions
+where
+  not member_is_bot
+snowsql_v3_key.sh -o output_file="number_of_issues_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_issues_now.csv generated:                                             
+"NOW","ISSUES"
+"2024-07-23","1006423"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct c.issue_id) as issues
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  years r
+on
+  c.created_at <= r.year
+where
+  not c.member_is_bot
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_issues_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_issues_range_year.csv generated:                                      
+"YEAR","ISSUES"
+"2024-01-01","190260"
+"2024-07-23","1006423"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct c.issue_id) as issues
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  months r
+on
+  c.created_at <= r.month
+where
+  not c.member_is_bot
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_issues_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_issues_range_month.csv generated:                                     
+"MONTH","ISSUES"
+"2023-08-01","32517"
+"2023-09-01","48616"
+"2023-10-01","108970"
+"2023-11-01","173901"
+"2023-12-01","184510"
+"2024-01-01","190260"
+"2024-02-01","377055"
+"2024-03-01","556756"
+"2024-04-01","618157"
+"2024-05-01","652680"
+"2024-06-01","740706"
+"2024-07-01","858402"
+"2024-07-23","1006423"
+select
+  current_timestamp()::date as now,
+  count(distinct pull_request_id) as pull_requests
+from
+  analytics.silver_fact.code_contributions
+where
+  not member_is_bot
+snowsql_v3_key.sh -o output_file="number_of_pullrequests_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_pullrequests_now.csv generated:                                       
+"NOW","PULL_REQUESTS"
+"2024-07-23","2187454"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct c.pull_request_id) as pull_requests
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  years r
+on
+  c.created_at <= r.year
+where
+  not c.member_is_bot
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_pullrequests_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_pullrequests_range_year.csv generated:                                
+"YEAR","PULL_REQUESTS"
+"2024-01-01","459116"
+"2024-07-23","2187454"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct c.pull_request_id) as pull_requests
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  months r
+on
+  c.created_at <= r.month
+where
+  not c.member_is_bot
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_pullrequests_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_pullrequests_range_month.csv generated:                               
+"MONTH","PULL_REQUESTS"
+"2023-08-01","63297"
+"2023-09-01","97039"
+"2023-10-01","249802"
+"2023-11-01","408221"
+"2023-12-01","439160"
+"2024-01-01","459116"
+"2024-02-01","807567"
+"2024-03-01","1157650"
+"2024-04-01","1294202"
+"2024-05-01","1396490"
+"2024-06-01","1604671"
+"2024-07-01","1895732"
+"2024-07-23","2187454"
+select
+  current_timestamp()::date as now,
+  count(distinct commit_id) as commits
+from
+  analytics.silver_fact.code_contributions
+where
+  not member_is_bot
+snowsql_v3_key.sh -o output_file="number_of_commits_now.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_commits_now.csv generated:                                            
+"NOW","COMMITS"
+"2024-07-23","14205015"
+with current_year as (
+  select date_trunc('year', current_timestamp())::date as year
+),
+
+years as (
+  select dateadd(year, -10, year) as year from current_year
+  union select dateadd(year, -9, year) from current_year
+  union select dateadd(year, -8, year) from current_year
+  union select dateadd(year, -7, year) from current_year
+  union select dateadd(year, -6, year) from current_year
+  union select dateadd(year, -5, year) from current_year
+  union select dateadd(year, -4, year) from current_year
+  union select dateadd(year, -3, year) from current_year
+  union select dateadd(year, -2, year) from current_year
+  union select dateadd(year, -1, year) from current_year
+  union select year from current_year
+  union select current_timestamp()
+)
+select
+  r.year::date as year,
+  count(distinct c.commit_id) as commits
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  years r
+on
+  c.created_at <= r.year
+where
+  not c.member_is_bot
+group by
+  year
+order by
+  year asc
+snowsql_v3_key.sh -o output_file="number_of_commits_range_year.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_commits_range_year.csv generated:                                     
+"YEAR","COMMITS"
+"2024-01-01","1874088"
+"2024-07-23","14205015"
+with current_month as (
+  select date_trunc('month', current_timestamp())::date as month
+),
+
+months as (
+  select dateadd(month, -12, month) as month from current_month
+  union select dateadd(month, -11, month) from current_month
+  union select dateadd(month, -10, month) from current_month
+  union select dateadd(month, -9, month) from current_month
+  union select dateadd(month, -8, month) from current_month
+  union select dateadd(month, -7, month) from current_month
+  union select dateadd(month, -6, month) from current_month
+  union select dateadd(month, -5, month) from current_month
+  union select dateadd(month, -4, month) from current_month
+  union select dateadd(month, -3, month) from current_month
+  union select dateadd(month, -2, month) from current_month
+  union select dateadd(month, -1, month) from current_month
+  union select month from current_month
+  union select current_timestamp()
+)
+select
+  r.month::date as month,
+  count(distinct c.commit_id) as commits
+from
+  analytics.silver_fact.code_contributions c
+inner join
+  months r
+on
+  c.created_at <= r.month
+where
+  not c.member_is_bot
+group by
+  month
+order by
+  month asc
+snowsql_v3_key.sh -o output_file="number_of_commits_range_month.csv" -o quiet=true -o friendly=false -o header=true -o output_format=csv < "/tmp/rep.sql"
+number_of_commits_range_month.csv generated:                                    
+"MONTH","COMMITS"
+"2023-08-01","281565"
+"2023-09-01","416767"
+"2023-10-01","920051"
+"2023-11-01","1679471"
+"2023-12-01","1795480"
+"2024-01-01","1874088"
+"2024-02-01","3391268"
+"2024-03-01","4601528"
+"2024-04-01","5159302"
+"2024-05-01","9139086"
+"2024-06-01","11179355"
+"2024-07-01","12667542"
+"2024-07-23","14205015"
+
